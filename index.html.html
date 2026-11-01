@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#173b35">
+<title>Estoque Fácil — Controle de peças</title>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--green:#173b35;--green2:#24594e;--mint:#e5f2eb;--bg:#f4f6f4;--ink:#1c2925;--muted:#68766f;--line:#dfe6e1;--white:#fff;--red:#a73535;--amber:#fff1d1}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,textarea{font:inherit}button{cursor:pointer;touch-action:manipulation}.top{background:var(--green);color:white;padding:22px max(18px,env(safe-area-inset-right)) 22px max(18px,env(safe-area-inset-left))}.topinner{max-width:1050px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:800;font-size:22px;letter-spacing:.2px}.brand small{display:block;font-weight:400;font-size:12px;color:#c7ddd3;margin-top:4px}.top button{border:1px solid #6b9185;background:transparent;color:white;border-radius:10px;padding:10px 12px}.wrap{max-width:1050px;margin:auto;padding:22px 16px 50px}.welcome h1{font-size:25px;margin:0 0 6px}.welcome p{margin:0;color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}.stat{background:white;border:1px solid var(--line);border-radius:15px;padding:16px}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:25px;margin-top:7px}.menu{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.tile{border:1px solid var(--line);background:white;border-radius:16px;padding:18px;text-align:left;min-height:130px;color:var(--ink);box-shadow:0 2px 5px #152f2010}.tile:active{transform:scale(.99)}.tile .ico{font-size:27px;display:block;margin-bottom:12px}.tile b{display:block;font-size:16px}.tile small{display:block;color:var(--muted);line-height:1.4;margin-top:6px}.panel{margin-top:20px;background:white;border:1px solid var(--line);border-radius:16px;padding:20px}.panel h2{margin:0 0 5px;font-size:22px}.sub{color:var(--muted);font-size:14px;margin:0 0 20px}.hidden{display:none!important}.field{display:flex;flex-direction:column;gap:7px;margin:14px 0}.field label{font-size:14px;font-weight:650}.field input,.field textarea{width:100%;border:1px solid #cbd6ce;border-radius:10px;padding:13px;background:white;color:var(--ink);min-height:47px}.field input[type=file]{padding:9px}.field textarea{min-height:80px}.row{display:flex;gap:12px}.row>*{flex:1;min-width:0}.btn{border:0;border-radius:10px;padding:13px 16px;background:var(--green);color:white;font-weight:650;min-height:46px}.btn.secondary{background:var(--mint);color:var(--green)}.btn.danger{background:#fff0ef;color:var(--red)}.btn.line{background:white;border:1px solid var(--line);color:var(--ink)}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px}.notice{padding:12px 14px;border-radius:10px;background:var(--mint);margin:12px 0;font-size:14px;line-height:1.5}.notice.warn{background:var(--amber)}.product{display:grid;grid-template-columns:115px 1fr;gap:18px;align-items:center;border:1px solid var(--line);padding:15px;border-radius:14px;margin-top:16px}.photo{width:115px;height:115px;border-radius:10px;object-fit:cover;background:#edf1ee}.product h3{margin:0 0 7px;overflow-wrap:anywhere}.stock{font-size:25px;font-weight:800;color:var(--green)}.muted{color:var(--muted);font-size:13px}.list{display:grid;gap:10px;margin-top:15px}.item{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:11px}.item .photo{width:65px;height:65px;flex-shrink:0}.itemmain{flex:1;min-width:0}.itemmain b{display:block;overflow-wrap:anywhere}.itemmain small{color:var(--muted)}.itemactions{display:flex;gap:6px;flex-wrap:wrap}.itemactions button{padding:8px 10px;font-size:13px;min-height:38px}.qrbox{display:inline-flex;background:white;border:1px solid var(--line);padding:12px;border-radius:8px;align-items:center;justify-content:center;margin:12px 0}.scanner{width:100%;max-width:500px;margin:14px auto}.scanner video{border-radius:12px}.footer{margin-top:26px;text-align:center;font-size:12px;color:var(--muted);line-height:1.6}.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:var(--mint);color:var(--green);font-size:12px;font-weight:700}.searchbar{display:flex;gap:8px}.searchbar input{flex:1;min-width:0;border:1px solid #cbd6ce;border-radius:10px;padding:12px}
+@media(max-width:650px){.menu{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{gap:7px}.stat{padding:12px}.stat strong{font-size:21px}.tile{padding:14px;min-height:125px}.row{flex-direction:column;gap:0}.panel{padding:16px}.topinner{align-items:flex-start}.brand{font-size:20px}.product{grid-template-columns:90px 1fr;gap:12px}.photo{width:90px;height:90px}.item{flex-wrap:wrap}.itemactions{width:100%}}
+@media print{body *{visibility:hidden!important}#printArea,#printArea *{visibility:visible!important}#printArea{position:absolute;left:0;top:0;background:white;padding:2mm;color:black}.print-label{display:inline-flex;flex-direction:column;align-items:center;width:30mm;min-height:28mm;overflow:hidden;gap:1mm;padding:1mm;text-align:center;break-inside:avoid}.print-label canvas,.print-label img{width:22mm!important;height:22mm!important}.print-label strong{font-size:8pt;overflow-wrap:anywhere}.print-label small{font-size:6pt}}
+</style>
+</head>
+<body>
+<header class="top"><div class="topinner"><div class="brand">▦ Estoque Fácil<small>Controle de peças por código e QR Code</small></div><button id="backupTop">⇩ Fazer backup</button></div></header>
+<main class="wrap">
+<section class="welcome"><h1>Seu estoque, organizado.</h1><p>Cadastre peças, registre movimentações e consulte o saldo em tempo real.</p></section>
+<section class="stats"><div class="stat"><span>Peças cadastradas</span><strong id="statParts">0</strong></div><div class="stat"><span>Unidades em estoque</span><strong id="statUnits">0</strong></div><div class="stat"><span>Estoque baixo (≤ 5)</span><strong id="statLow">0</strong></div></section>
+<nav class="menu" aria-label="Menu principal">
+<button class="tile" data-page="edit"><span class="ico">✚</span><b>Cadastro / Alteração</b><small>Cadastre peças, fotos e QR Codes.</small></button>
+<button class="tile" data-page="library"><span class="ico">▤</span><b>Biblioteca de peças</b><small>Consulte, edite e imprima etiquetas.</small></button>
+<button class="tile" data-page="search"><span class="ico">⌕</span><b>Busca de peças</b><small>Pesquise por código ou leia QR Code.</small></button>
+<button class="tile" data-page="entry"><span class="ico">＋</span><b>Entrada de estoque</b><small>Registre o abastecimento.</small></button>
+<button class="tile" data-page="exit"><span class="ico">↗</span><b>Saída de estoque</b><small>Leia o QR e desconte quantidades.</small></button>
+<button class="tile" data-page="history"><span class="ico">↺</span><b>Histórico</b><small>Confira entradas e saídas registradas.</small></button>
+</nav>
+<section id="page" class="panel hidden" aria-live="polite"></section>
+<div class="footer">Estoque Fácil • Sincronizado na nuvem (Supabase).<br>Acesse de qualquer computador conectado à internet.</div>
+</main>
+<div id="printArea" class="hidden"></div>
+<script>
+(()=> {
+'use strict';
+const $=s=>document.querySelector(s);
+const page=$('#page');
+
+// Configuração do Supabase (Substitua com suas chaves do painel Supabase)
+const SUPABASE_URL = 'https://icgffgndbewlgpghtent.supabase.co/rest/v1/';
+const SUPABASE_ANON_KEY = 'sb_publishable_aKUT452CXFSSj0HiMrN9fQ_1EpjvMHI';
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+let db={parts:[],moves:[]}, scanner=null, currentPhoto='', pendingScanTarget='';
+
+async function load(){
+    if(!supabaseClient){ console.error('Supabase não inicializado.'); return; }
+    try {
+        const { data: partsData, error: partsError } = await supabaseClient.from('produtos').select('*');
+        const { data: movesData, error: movesError } = await supabaseClient.from('movimentacoes').select('*');
+        
+        if(partsError) console.error('Erro ao carregar produtos:', partsError);
+        if(movesError) console.error('Erro ao carregar movimentações:', movesError);
+
+        db.parts = (partsData || []).map(p => ({
+            code: p.code,
+            name: p.name || '',
+            qty: Number(p.qty) || 0,
+            photo: p.photo || '',
+            qr: p.qr || p.code,
+            created: p.created || new Date().toISOString(),
+            updated: p.updated || ''
+        }));
+
+        db.moves = (movesData || []).sort((a,b)=> new Date(b.date) - new Date(a.date)).map(m => ({
+            id: m.id,
+            date: m.date,
+            type: m.type,
+            code: m.code,
+            qty: Number(m.qty) || 0,
+            before: Number(m.before) || 0,
+            after: Number(m.after) || 0,
+            note: m.note || ''
+        }));
+    } catch(e) {
+        console.warn(e);
+    }
+    refreshStats();
+}
+
+async function saveProduct(p){
+    const { error } = await supabaseClient.from('produtos').upsert([p], { onConflict: 'code' });
+    if(error){ alert('Erro ao salvar no Supabase: ' + error.message); return false; }
+    await load();
+    return true;
+}
+
+async function saveMovementAndStock(p, move){
+    const { error: errProd } = await supabaseClient.from('produtos').update({ qty: p.qty, updated: new Date().toISOString() }).eq('code', p.code);
+    const { error: errMove } = await supabaseClient.from('movimentacoes').insert([move]);
+    if(errProd || errMove){
+        alert('Erro ao registrar movimentação na nuvem.');
+        return false;
+    }
+    await load();
+    return true;
+}
+
+async function deleteProductFromDb(code){
+    const { error } = await supabaseClient.from('produtos').delete().eq('code', code);
+    if(error){ alert('Erro ao excluir peça.'); return false; }
+    await load();
+    return true;
+}
+
+function refreshStats(){$('#statParts').textContent=db.parts.length;$('#statUnits').textContent=db.parts.reduce((s,p)=>s+(Number(p.qty)||0),0);$('#statLow').textContent=db.parts.filter(p=>Number(p.qty)<=5).length}
+function esc(v=''){return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function fmt(d){return new Date(d).toLocaleString('pt-BR')}
+function find(code){return db.parts.find(p=>p.code.toLowerCase()===String(code||'').trim().toLowerCase()||p.qr===String(code||'').trim())}
+function show(title,sub,body){stopScanner();page.classList.remove('hidden');page.innerHTML=`<h2>${title}</h2><p class="sub">${sub}</p>${body}<div class="actions"><button class="btn line" data-home>← Voltar ao início</button></div>`;page.scrollIntoView({behavior:'smooth',block:'start'})}
+function home(){stopScanner();page.classList.add('hidden');page.innerHTML='';}
+function stopScanner(){if(scanner){const s=scanner;scanner=null;try{const r=s.stop();if(r&&r.catch)r.catch(()=>{});s.clear()}catch(e){}}}
+function photoMarkup(p){return p.photo?`<img class="photo" src="${p.photo}" alt="Foto da peça">`:`<div class="photo" style="display:grid;place-items:center;color:#68766f">Sem foto</div>`}
+function productCard(p){return `<div class="product">${photoMarkup(p)}<div><h3>${esc(p.code)}</h3><div class="muted">${esc(p.name||'Peça sem descrição')}</div><div class="stock">${Number(p.qty)||0} <span style="font-size:13px;font-weight:500">unidades</span></div><div class="muted">QR: ${esc(p.qr||p.code)}</div><div class="actions"><button class="btn secondary" data-edit="${esc(p.code)}">Editar</button><button class="btn line" data-print="${esc(p.code)}">Imprimir QR</button></div></div></div>`}
+
+function showEdit(code=''){const p=code?find(code):null;currentPhoto=p?.photo||'';show(p?'Alterar peça':'Cadastrar peça','Informe o código único da peça, o saldo inicial e, se desejar, uma foto.',`
+<form id="editForm">
+<div class="field"><label for="code">Código da peça *</label><input id="code" required maxlength="100" value="${esc(p?.code||'')}" ${p?'readonly':''} placeholder="Ex.: PEC-001"></div>
+<div class="field"><label for="name">Descrição (opcional)</label><input id="name" maxlength="160" value="${esc(p?.name||'')}" placeholder="Ex.: Parafuso M8"></div>
+<div class="field"><label for="qty">Quantidade em estoque *</label><input id="qty" type="number" min="0" step="1" required value="${Number(p?.qty)||0}"></div>
+<div class="field"><label for="photo">Foto da peça (opcional)</label><input id="photo" type="file" accept="image/*" capture="environment"><small class="muted">A foto será reduzida para economizar espaço.</small>${p?.photo?'<div>Foto atual cadastrada.</div>':''}</div>
+<div class="field"><label>QR Code vinculado ao código</label><div class="notice">O QR Code contém o código da peça <b>${esc(p?.code||'que você cadastrar')}</b>. Ele será gerado automaticamente ao salvar.</div></div>
+<div class="actions"><button class="btn" type="submit">Salvar peça</button>${p?`<button class="btn line" type="button" data-print="${esc(p.code)}">Imprimir QR pequeno</button>`:''}</div>
+</form><div id="editMessage"></div>`);
+$('#editForm').addEventListener('submit',async e=>{e.preventDefault();const c=$('#code').value.trim();if(!c)return;let old=find(c);if(!old&&db.parts.some(x=>x.code.toLowerCase()===c.toLowerCase())){alert('Este código já existe.');return}
+const file=$('#photo').files[0];let photo=currentPhoto;if(file){try{photo=await compressImage(file)}catch(err){alert('Não foi possível processar a foto.');return}}
+const qty=Number($('#qty').value);if(!Number.isSafeInteger(qty)||qty<0){alert('Informe uma quantidade inteira igual ou maior que zero.');return}
+let productRecord;
+if(old){
+    productRecord={code:c, name:$('#name').value.trim(), qty, photo, qr:c, created:old.created||new Date().toISOString(), updated:new Date().toISOString()};
+}else{
+    productRecord={code:c, name:$('#name').value.trim(), qty, photo, qr:c, created:new Date().toISOString(), updated:new Date().toISOString()};
+}
+if(await saveProduct(productRecord)){showEditSaved(c)}
+});}
+
+function showEditSaved(code){const p=find(code);show('Peça salva','Cadastro atualizado com sucesso.',productCard(p)+`<div class="notice">O QR Code usa o código <b>${esc(p.code)}</b>. Imprima a etiqueta e cole na peça ou na prateleira.</div><div class="actions"><button class="btn" data-print="${esc(p.code)}">Imprimir QR pequeno</button><button class="btn secondary" data-page="edit">Cadastrar outra peça</button><button class="btn line" data-page="library">Abrir biblioteca</button></div>`)}
+function compressImage(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=reject;reader.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const scale=Math.min(1,700/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.72))};img.src=reader.result};reader.readAsDataURL(file)})}
+
+function showLibrary(){
+    load().then(() => {
+        const items=[...db.parts].sort((a,b)=>a.code.localeCompare(b.code,'pt-BR'));
+        show('Biblioteca de peças',`${items.length} peça(s) cadastrada(s).`,`<div class="searchbar"><input id="libFilter" placeholder="Filtrar por código ou descrição"><button class="btn" data-page="edit">＋ Nova</button></div><div id="libList" class="list"></div>`);
+        const render=()=>{const q=$('#libFilter').value.toLowerCase();const arr=items.filter(p=>p.code.toLowerCase().includes(q)||(p.name||'').toLowerCase().includes(q));$('#libList').innerHTML=arr.length?arr.map(p=>`<div class="item">${photoMarkup(p)}<div class="itemmain"><b>${esc(p.code)}</b><small>${esc(p.name||'Sem descrição')}<br>Estoque: ${p.qty}</small></div><div class="itemactions"><button class="btn secondary" data-edit="${esc(p.code)}">Editar</button><button class="btn line" data-print="${esc(p.code)}">QR / imprimir</button><button class="btn danger" data-delete="${esc(p.code)}">Excluir</button></div></div>`).join(''):'<div class="empty">Nenhuma peça encontrada.</div>'};
+        $('#libFilter').addEventListener('input',render);
+        render();
+    });
+}
+
+function showSearch(){show('Busca de peças','Digite o código ou use a câmera para ler o QR Code.',`<form id="searchForm"><div class="field"><label for="searchCode">Código da peça ou conteúdo do QR</label><input id="searchCode" placeholder="Digite ou escaneie o código"></div><div class="actions"><button class="btn" type="submit">Buscar</button><button class="btn secondary" type="button" id="searchScan">📷 Ler QR Code</button></div></form><div id="scanBox" class="scanner hidden"></div><div id="searchResult"></div>`);$('#searchForm').addEventListener('submit',e=>{e.preventDefault();renderSearch($('#searchCode').value)});$('#searchScan').onclick=()=>startScanner('scanBox',code=>{$('#searchCode').value=code;renderSearch(code)})}
+function renderSearch(code){const p=find(code);$('#searchResult').innerHTML=p?productCard(p):'<div class="notice warn">Peça não encontrada. Confira o código ou cadastre a peça primeiro.</div>'}
+
+function showMovement(kind,initialCode=''){
+    const isEntry=kind==='entry';
+    show(isEntry?'Entrada de estoque':'Saída de estoque',isEntry?'Informe o código da peça e a quantidade recebida.': 'Leia o QR Code da peça ou digite o código. Informe a quantidade a retirar.',`<form id="moveForm"><div class="field"><label for="moveCode">Código da peça *</label><input id="moveCode" required value="${esc(initialCode)}" placeholder="Ex.: PEC-001"></div><div class="actions"><button type="button" class="btn secondary" id="moveScan">📷 Ler QR Code</button><button type="button" class="btn line" id="checkMove">Consultar peça</button></div><div id="scanBox" class="scanner hidden"></div><div id="moveProduct"></div><div class="field"><label for="moveQty">Quantidade ${isEntry?'de entrada':'de saída'} *</label><input id="moveQty" type="number" min="1" step="1" required placeholder="Digite a quantidade"></div><div class="field"><label for="moveNote">Observação (opcional)</label><input id="moveNote" maxlength="180" placeholder="Ex.: Ordem de serviço"></div><button class="btn" type="submit">Confirmar ${isEntry?'entrada':'saída'}</button></form><div id="moveMessage"></div>`);
+    const check=()=>{const p=find($('#moveCode').value);$('#moveProduct').innerHTML=p?productCard(p):'<div class="notice warn">Peça não encontrada.</div>';return p};
+    $('#checkMove').onclick=check;
+    $('#moveCode').addEventListener('change',check);
+    if(initialCode)check();
+    $('#moveScan').onclick=()=>startScanner('scanBox',code=>{$('#moveCode').value=code;check()});
+    
+    $('#moveForm').addEventListener('submit',async e=>{
+        e.preventDefault();
+        const p=check(),n=Number($('#moveQty').value);
+        if(!p){alert('Peça não encontrada.');return}
+        if(!Number.isSafeInteger(n)||n<1){alert('Informe uma quantidade inteira maior que zero.');return}
+        if(!isEntry&&n>p.qty){alert(`Estoque insuficiente. Disponível: ${p.qty}.`);return}
+        const before=p.qty;
+        p.qty+=isEntry?n:-n;
+        const moveRecord={
+            id:Date.now()+'-'+Math.random().toString(36).slice(2,7),
+            date:new Date().toISOString(),
+            type:kind,
+            code:p.code,
+            qty:n,
+            before,
+            after:p.qty,
+            note:$('#moveNote').value.trim()
+        };
+        if(await saveMovementAndStock(p, moveRecord)){
+            show('Movimentação registrada',`${isEntry?'Entrada':'Saída'} confirmada para ${p.code}.`,productCard(p)+`<div class="notice">Saldo anterior: ${before} • Quantidade ${isEntry?'recebida':'retirada'}: ${n} • Saldo atual: <b>${p.qty}</b></div><div class="actions"><button class="btn" data-page="${kind}">Nova ${isEntry?'entrada':'saída'}</button><button class="btn secondary" data-page="history">Ver histórico</button></div>`)
+        }
+    });
+}
+
+function showHistory(){
+    load().then(() => {
+        const moves=db.moves;
+        show('Histórico de movimentações',`${moves.length} registro(s), do mais recente ao mais antigo.`,moves.length?`<div class="list">${moves.map(m=>`<div class="item"><div class="itemmain"><b>${m.type==='entry'?'＋ Entrada':'− Saída'} · ${esc(m.code)}</b><small>${fmt(m.date)}<br>Quantidade: ${m.qty} · Saldo: ${m.before} → ${m.after}${m.note?'<br>'+esc(m.note):''}</small></div><span class="pill">${m.type==='entry'?'ENTRADA':'SAÍDA'}</span></div>`).join('')}</div><div class="actions"><button class="btn line" id="exportHistory">Exportar histórico CSV</button></div>`:'<div class="empty">Nenhuma movimentação registrada ainda.</div>');
+        const b=$('#exportHistory');
+        if(b)b.onclick=()=>download('historico_estoque.csv','data,tipo,codigo,quantidade,saldo_anterior,saldo_atual,observacao\n'+moves.map(m=>[fmt(m.date),m.type,m.code,m.qty,m.before,m.after,m.note].map(csv).join(';')).join('\n'),'text/csv;charset=utf-8')
+    });
+}
+
+function csv(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+function startScanner(boxId,onCode){stopScanner();const box=$('#'+boxId);if(!box)return;box.classList.remove('hidden');if(!window.Html5Qrcode){box.innerHTML='<div class="notice warn">Não foi possível carregar o leitor QR. Verifique sua conexão com a internet e recarregue a página.</div>';return}scanner=new Html5Qrcode(boxId);const instance=scanner;instance.start({facingMode:'environment'},{fps:10,qrbox:{width:230,height:230}},decoded=>{onCode(decoded);stopScanner();box.classList.add('hidden')},()=>{}).catch(err=>{box.innerHTML='<div class="notice warn">Não foi possível abrir a câmera. Autorize o acesso à câmera e abra esta página por HTTPS ou localhost.</div><button class="btn line" id="closeScan">Fechar leitor</button>';const c=$('#closeScan');if(c)c.onclick=stopScanner;console.error(err)})}
+function printQR(code){const p=find(code);if(!p)return;const area=$('#printArea');area.classList.remove('hidden');area.innerHTML=`<div class="print-label"><div id="printQr"></div><strong>${esc(p.code)}</strong>${p.name?`<small>${esc(p.name)}</small>`:''}</div>`;if(!window.QRCode){const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';s.onload=()=>makePrintQR(p);s.onerror=()=>alert('Não foi possível carregar o gerador de QR. Verifique a internet.');document.head.appendChild(s)}else makePrintQR(p)}
+function makePrintQR(p){const el=$('#printQr');if(!el)return;el.innerHTML='';new QRCode(el,{text:p.qr||p.code,width:180,height:180,correctLevel:QRCode.CorrectLevel.M});setTimeout(()=>window.print(),350)}
+function download(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function backup(){download('backup_estoque_facil_'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(db,null,2),'application/json')}
+
+async function importBackup(){
+    const i=document.createElement('input');
+    i.type='file';
+    i.accept='.json,application/json';
+    i.onchange=()=>{
+        const f=i.files[0];
+        if(!f)return;
+        const r=new FileReader();
+        r.onload=async()=>{
+            try{
+                const x=JSON.parse(r.result);
+                if(!Array.isArray(x.parts)||!Array.isArray(x.moves))throw Error();
+                if(!confirm('Importar backup irá mesclar/atualizar os dados no Supabase. Deseja continuar?'))return;
+                for(const p of x.parts){
+                    await supabaseClient.from('produtos').upsert([p], { onConflict: 'code' });
+                }
+                for(const m of x.moves){
+                    await supabaseClient.from('movimentacoes').upsert([m], { onConflict: 'id' });
+                }
+                await load();
+                alert('Backup importado com sucesso para a nuvem.');
+                home();
+            }catch(e){alert('Arquivo de backup inválido.')}
+        };
+        r.readAsText(f);
+    };
+    i.click();
+}
+
+document.addEventListener('click',async e=>{
+    const b=e.target.closest('button');
+    if(!b)return;
+    if(b.hasAttribute('data-home')){home();return}
+    if(b.dataset.page){
+        const v=b.dataset.page;
+        ({'edit':()=>showEdit(),'library':showLibrary,'search':showSearch,'entry':()=>showMovement('entry'),'exit':()=>showMovement('exit'),'history':showHistory})[v]?.();
+        return;
+    }
+    if(b.dataset.edit){showEdit(b.dataset.edit);return}
+    if(b.dataset.print){printQR(b.dataset.print);return}
+    if(b.dataset.delete){
+        const p=find(b.dataset.delete);
+        if(p&&confirm(`Excluir ${p.code}? O histórico de movimentações será mantido.`)){
+            if(await deleteProductFromDb(p.code)){showLibrary()}
+        }
+        return;
+    }
+});
+
+document.querySelectorAll('.tile').forEach(b=>b.addEventListener('click',()=>({'edit':()=>showEdit(),'library':showLibrary,'search':showSearch,'entry':()=>showMovement('entry'),'exit':()=>showMovement('exit'),'history':showHistory})[b.dataset.page]?.()));
+$('#backupTop').addEventListener('click',backup);
+
+const backupBtn=document.createElement('button');
+backupBtn.className='btn line';
+backupBtn.textContent='Importar backup';
+backupBtn.onclick=importBackup;
+document.querySelector('.topinner').appendChild(backupBtn);
+
+// Inicialização carregando dados do Supabase
+load();
+})();
+</script>
+</body>
+</html>
